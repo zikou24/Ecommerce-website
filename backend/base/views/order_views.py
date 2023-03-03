@@ -13,11 +13,13 @@ from rest_framework import status
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def addOrderItems(request):
 
     user = request.user
     data = request.data
     orderItems = data['orderItems']
+
     if orderItems and len(orderItems) == 0:
 
         return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
@@ -65,10 +67,31 @@ def addOrderItems(request):
             # updateStock
 
             product.countInStock -= item.qty
+
             product.save()
 
-        serializer = OrderItemSerializers(order, many=False)
+        serializer = OrderSerializers(order, many=False)
+
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request, pk):
+
+    user = request.user
+    try:
+        order = Order.objects.get(_id=pk)
+
+        if user.is_staff or order.user == user:
+            serializer = OrderSerializers(order, many=False)
+            return Response(serializer.data)
+        else:
+            Response({"detail": 'Not authorized to view this order'},
+                     status=status.HTTP_400_BAD_REQUEST)
+
+    except:
+        return Response({'detail': 'Order does not Exists'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

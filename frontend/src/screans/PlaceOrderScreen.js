@@ -4,7 +4,7 @@ import {Row,Col,ListGroup,Image,Card, Button} from 'react-bootstrap'
 //import { useNavigate} from 'react-router-dom'
 import {useSelector,useDispatch} from 'react-redux'
 
-//import Message from '../component/Message'
+
 import { Link ,useNavigate} from 'react-router-dom'
 
 import CheckoutSteps from '../component/CheckoutSteps'
@@ -12,17 +12,20 @@ import Message from '../component/Message'
 
 import { createOrder } from '../actions/orderActions'
 
+import { ORDER_CREATE_RESET } from '../constants/OrderConstants'
+
 
 function PlaceOrderScreen() {
 
+    
     const dispatch = useDispatch()
 
     let history = useNavigate();
 
     const orderCreate = useSelector(state=>state.orderCreate)
 
-    const { error, success} = orderCreate
-
+    const {order, error, success} = orderCreate
+ 
     const cart = useSelector(state=>state.cart)
 
     const { shippingAdress, payementMethod ,cartItems} = cart
@@ -39,13 +42,13 @@ function PlaceOrderScreen() {
 
         if (success){
 
-            history('/')
+            history(`/order/${order._id}`)
+            dispatch({type:ORDER_CREATE_RESET})
             
-
         }
-        
-    },[success,history])
-    
+
+    },[success,history,order,dispatch])
+
     const placeOrderHandler=()=>{
 
         dispatch(createOrder({
@@ -58,14 +61,12 @@ function PlaceOrderScreen() {
             taxPrice: cart.taxPrice,
             totalPrice:cart.totalPrice
 
-
         }))
         
         console.log(createOrder)
 
     }
 
-  
   return (
     <div>
 
@@ -210,7 +211,10 @@ function PlaceOrderScreen() {
                         </ListGroup.Item>
 
 
+<ListGroup.Item>
+    {error && <Message variant = 'danger'>{error}</Message>}
 
+</ListGroup.Item>
 <ListGroup.Item>
     <Button type = 'button' className='btn-block mx-3'  disabled ={cartItems ===0} onClick={placeOrderHandler} > Place Order</Button>
 
