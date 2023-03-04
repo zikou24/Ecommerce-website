@@ -10,6 +10,7 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from rest_framework import status
+from datetime import datetime
 
 
 @api_view(['POST'])
@@ -80,18 +81,45 @@ def addOrderItems(request):
 def getOrderById(request, pk):
 
     user = request.user
+
     try:
+
         order = Order.objects.get(_id=pk)
 
         if user.is_staff or order.user == user:
+
             serializer = OrderSerializers(order, many=False)
+
             return Response(serializer.data)
         else:
+
             Response({"detail": 'Not authorized to view this order'},
                      status=status.HTTP_400_BAD_REQUEST)
 
     except:
-        return Response({'detail': 'Order does not Exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'detail': 'Order does not Exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def updateOrderTopaid(request, pk):
+
+    order = Order.objects.get(_id=pk)
+    order.isPaid = True
+    order.paidAt = datetime.now()
+    order.save()
+    return Response('Order was paid')
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getMyOrders(request):
+
+    user = request.user
+    orders = user.order_set.all()
+    serializer = OrderSerializers(orders, many=True)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])

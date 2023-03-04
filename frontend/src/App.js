@@ -20,6 +20,8 @@ import UserEditScreen from './screans/UserEditScreen';
 import ProductListScreen from './screans/ProductListScreen';
 import ProductEditScreen from './screans/ProductEditScreen';
 
+import OrderScreen from './screans/OrderScreen';
+
 
 class App extends Component {
   render() {
@@ -53,6 +55,7 @@ class App extends Component {
             <Route path='/admin/users/:id/edit' element={<UserEditScreen/>}/>
             <Route path='/admin/productlist' element={<ProductListScreen/>}/>
             <Route path='/admin/product/:id/edit' element={<ProductEditScreen/>}/>
+            <Route path='/order/:id' element={<OrderScreen/>}/>
 
           </Routes>
           

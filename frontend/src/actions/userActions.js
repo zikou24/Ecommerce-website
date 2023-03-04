@@ -26,6 +26,7 @@ import { USER_UPDATE_REQUEST } from "../constants/userConstants";
 import { USER_UPDATE_FAIL } from "../constants/userConstants";
 
 import { USER_UPDATE_SUCCESS } from "../constants/userConstants";
+import { ORDER_LIST_MY_RESET } from "../constants/OrderConstants";
 
 import axios from "axios";
 
@@ -67,6 +68,7 @@ export const login = (email,password) => async(dispatch)=>
         localStorage.removeItem('userInfo')
         dispatch({type:USER_LOGOUT})
         dispatch({type:USER_LIST_RESET})
+        dispatch({type:ORDER_LIST_MY_RESET})
         
     }
 
