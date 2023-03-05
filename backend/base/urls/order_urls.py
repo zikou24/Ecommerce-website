@@ -10,6 +10,11 @@ urlpatterns = [
 
     path('add/', views.addOrderItems, name='order-add'),
 
+    path('<str:pk>/deliver/', views.updateOrderToDelivered, name='order-delivered'),
+
     path('<str:pk>/', views.getOrderById, name='user-order'),
+
+
+
 
 ]

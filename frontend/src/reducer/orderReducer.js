@@ -10,8 +10,14 @@ import { ORDER_LIST_MY_SUCCESS } from "../constants/OrderConstants";
 import { ORDER_LIST_MY_FAIL } from "../constants/OrderConstants";
 import { ORDER_LIST_MY_RESET } from "../constants/OrderConstants";
 
+import { ORDER_LIST_FAIL } from "../constants/OrderConstants";
+import { ORDER_LIST_REQUEST } from "../constants/OrderConstants";
+import { ORDER_LIST_SUCCESS } from "../constants/OrderConstants";
 
-
+import { ORDER_DELIVER_REQUEST } from "../constants/OrderConstants";
+import { ORDER_DELIVER_FAIL } from "../constants/OrderConstants";
+import { ORDER_DELIVER_RESET } from "../constants/OrderConstants";
+import { ORDER_DELIVER_SUCCESS } from "../constants/OrderConstants";
 
 export const  orderCreateReducer=(state = {},action)=>{
 
@@ -127,3 +133,79 @@ export const  orderListMyReducer=(state = {orders:[]},action)=>{
           return state
     }
 }
+
+
+
+
+
+export const  orderListReducer=(state = {orders:[]},action)=>{
+
+    switch(action.type){
+
+        case ORDER_LIST_REQUEST:
+
+            return {
+                loading:true
+            }
+
+        case ORDER_LIST_SUCCESS:
+
+            return {
+                loading:false,
+                orders:action.payload    
+            }
+
+
+        case ORDER_LIST_FAIL:
+            return {
+                loading:false,
+                error:action.payload
+
+            }
+                        
+        default:
+          return state
+    }
+}
+
+
+
+
+
+
+export const  orderDeliverReducer=(state = {},action)=>{
+
+    switch(action.type){
+
+        case ORDER_DELIVER_REQUEST:
+
+            return {
+                loading:true
+            }
+
+        case ORDER_DELIVER_SUCCESS:
+
+            return {
+                loading:false,
+                sucess:true
+                
+            }
+
+
+        case ORDER_DELIVER_FAIL:
+            return {
+                loading:false,
+                error:action.payload
+            }
+        case ORDER_DELIVER_RESET:
+
+            return {}
+
+        default:
+          return state
+    }
+}
+
+
+
+

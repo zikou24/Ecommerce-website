@@ -133,3 +133,15 @@ def getOrders(request):
     serializer = OrderSerializers(ordersss, many=True)
 
     return Response(serializer.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateOrderToDelivered(request, pk):
+
+    order = Order.objects.get(_id=pk)
+    order.isDelivred = True
+    order.deliveredAt = datetime.now()
+    order.save()
+
+    return Response("order wes delivererd")

@@ -1,32 +1,38 @@
 import React, { useEffect } from 'react'
-import {Row,Col,ListGroup,Image,Card} from 'react-bootstrap'
+import {Row,Col,ListGroup,Image,Card, Button} from 'react-bootstrap'
 
 //import { useNavigate} from 'react-router-dom'
 import {useSelector,useDispatch} from 'react-redux'
 
 
-import { Link ,useParams} from 'react-router-dom'
+import { Link ,useParams,useNavigate} from 'react-router-dom'
 
 import Message from '../component/Message'
 
-import { getOrderDetails } from '../actions/orderActions'
+import { getOrderDetails,deliverOrder } from '../actions/orderActions'
 import Loader from '../component/Loader'
 
-
+import { ORDER_DELIVER_RESET } from '../constants/OrderConstants'
 
 function OrderScreen() {
 
 
  const { id } = useParams();
+ const history = useNavigate()
     
     const dispatch = useDispatch()
 
     
-
     const orderDetails = useSelector(state=>state.orderDetails)
 
     const {order, error, loading} = orderDetails
  
+    const orderDeliver = useSelector(state=>state.orderDeliver)
+
+    const {sucess:sucessDeliver,loading:loadingDeliver} = orderDeliver
+    const userLogin = useSelector(state=>state.userLogin)
+
+    const { userInfo } = userLogin
 
     if(!loading && !error){
 
@@ -35,14 +41,27 @@ function OrderScreen() {
     }
     
     useEffect(()=>{
-
-        if(!order || order._id !== Number(id)){
-
-            dispatch(getOrderDetails(id))
-
+        if (!userInfo){
+           history('/login')
+    
         }
 
-    },[order,id,dispatch])
+
+
+        if(!order || order._id !== Number(id) || sucessDeliver){
+
+            dispatch(getOrderDetails(id))
+            dispatch({type:ORDER_DELIVER_RESET})
+
+            
+        }
+
+    },[order,id,dispatch,sucessDeliver,userInfo,history])
+
+
+    const deliverHandler=()=>{
+        dispatch(deliverOrder(order))
+    }
 
   return loading ? (<Loader/>) 
   :error ? (<Message variant='danger'>{error}</Message>)
@@ -78,7 +97,7 @@ function OrderScreen() {
 
 
                         </p>
-                        {order.isDelivered ? (
+                        {order.isDelivred ? (
                            <h3>Delivrered on <br/>{order.deliveredAt}</h3> 
                         ) :
                         <h2>Not Delivered</h2>
@@ -206,7 +225,28 @@ function OrderScreen() {
 
 </ListGroup.Item>
                     </ListGroup>
+
                 </Card>
+
+                <ListGroup>
+    
+<br/>
+<br/>
+
+    {loadingDeliver && <Loader/>}
+    {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+        
+        <ListGroup>
+            
+            <Button type='button' className = 'btn btn-block'
+            onClick={deliverHandler}
+            >
+                Mark as  Delivered 
+            </Button>
+        </ListGroup>
+    )}
+</ListGroup>
+
 
             </Col>
 
