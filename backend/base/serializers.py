@@ -3,7 +3,7 @@ from pyexpat import model
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Product, ShippingAddress, Order, OrderItem
+from .models import Product, ShippingAddress, Order, OrderItem, Review
 
 
 class UserSerializers(serializers.ModelSerializer):
@@ -48,10 +48,27 @@ class UserSerializerWithToken(UserSerializers):
         return str(token.access_token)
 
 
+class ReviewSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
 class ProductSerializers(serializers.ModelSerializer):
+    reviews = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Product
         fields = '__all__'
+
+    def get_reviews(self, obj):
+
+            reviewss = obj.review_set.all()
+
+            serializer = ReviewSerializers(reviewss, many=True)
+
+            return serializer.data
+        
 
 
 class ShippinAdressSerializers(serializers.ModelSerializer):
@@ -64,6 +81,8 @@ class OrderItemSerializers(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = '__all__'
+
+
 class OrderSerializers(serializers.ModelSerializer):
 
     orderItems = serializers.SerializerMethodField(read_only=True)

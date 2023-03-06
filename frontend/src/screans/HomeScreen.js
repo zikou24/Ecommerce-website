@@ -1,26 +1,34 @@
 import React ,{useEffect} from 'react'
 import { Row, Col } from 'react-bootstrap'
 import Product from '../component/Product'
+import { useLocation} from 'react-router-dom'
 import {useDispatch,useSelector} from 'react-redux'
+
 import { listProducts } from '../actions/productActions'
 import Loader from '../component/Loader'
-
 import Message from '../component/Message'
 
 
 function HomeScreen() {
 
+    //const histroy = useNavigate()
+    let location = useLocation()
+
     const dispatch = useDispatch()
+
 
     const productList = useSelector(state=>state.productList)
     
     const {error,loading,products}  = productList
 
+    let keyword = location.search
+    console.log(keyword)
+
      useEffect(()=>{
 
-        dispatch(listProducts())
+        dispatch(listProducts(keyword))
 
-   },[dispatch])
+   },[dispatch,keyword])
    
 
 

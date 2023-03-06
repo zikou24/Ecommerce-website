@@ -7,8 +7,9 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { useSelector,useDispatch } from 'react-redux';
 
 import { NavDropdown } from 'react-bootstrap';
-import { logout } from '../actions/userActions';
 
+import SearchBox from './SearchBox';
+import { logout } from '../actions/userActions';
 
 function Header() {
 
@@ -43,6 +44,8 @@ const logoutHandler=()=>{
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
         <Navbar.Collapse id="basic-navbar-nav">
+          
+          <SearchBox/>
 
           <Nav className="mr-auto">
 

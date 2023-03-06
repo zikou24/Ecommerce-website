@@ -30,16 +30,19 @@ import { PRODUCT_CREATE_SUCCESS } from "../constants/productConstants"
 import { PRODUCT_CREATE_REQUEST } from "../constants/productConstants"
 import { PRODUCT_CREATE_FAIL } from "../constants/productConstants"
 
+
+import { PRODUCT_CREATE_REVIEW_FAIL,PRODUCT_CREATE_REVIEW_REQUEST,PRODUCT_CREATE_REVIEW_SUCCESS} from "../constants/productConstants"
+
 import axios from "axios"
 
-export const listProducts =() => async(dispatch) => {
+export const listProducts =(keyword = '') => async(dispatch) => {
     
 try{
 
     dispatch({type:PROUDUCT_LIST_REQUEST})
 
-    const {data } = await axios.get('/api/products/')
-
+    const {data } = await axios.get(`/api/products/${keyword}`)
+    
     dispatch({type:PROUDUCT_LIST_SUCCESS,payload:data})
     
 } 
@@ -172,60 +175,110 @@ export const createProduct = () => async(dispatch,getState)=>
     }
 
 
+
+
     export const updateProduct = (product) => async(dispatch,getState)=> 
         
-        {
+    {
 
-            try{
+        try{
 
-                dispatch({type:PRODUCT_UPDATE_REQUEST})
+            dispatch({type:PRODUCT_UPDATE_REQUEST})
+            
+            const 
+            { 
+                userLogin :{ userInfo },
+           } = getState()
+
+            const config = {
+
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + userInfo.token
+                },
+                data : {},
                 
-                const 
-                { 
-                    userLogin :{ userInfo },
-               } = getState()
+            };
 
-                const config = {
+            axios.put(`/api/products/updateproduct/${product._id}`,product,config).then(response=>{
 
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + userInfo.token
-                    },
-                    data : {},
+                dispatch({type:PRODUCT_UPDATE_SUCCESS,payload:response.data})
+
+                dispatch({type:PROUDUCT_DETAILS_SUCCESS,payload:response.data})
+
+            })
+
+        }
+        
+        catch(error)
+        
+        {    
+
+            dispatch({
+                
+                type:PRODUCT_UPDATE_FAIL,payload:error.response && error.response.data.detail 
+                ? error.response.data.detail
+                : error.message,
+
+            })
+
+        }
+
+    }
+
+
+
+
+
+                export const createProductReview = (id,review) => async(dispatch,getState)=> 
+
+                {
+                
+                    try{
+                
+                        dispatch({type:PRODUCT_CREATE_REVIEW_REQUEST})
+                        
+                        const 
+                        { 
+                            userLogin :{ userInfo },
+                       } = getState()
+                
+                        const config = {
+                
+                            headers: { 
+                                'Content-Type': 'application/json',
+                
+                                'Authorization': 'Bearer ' + userInfo.token
+                
+                            },
+                
+                            data : {},
+                
+                        };
+                        
+                        axios.post(`/api/products/${id}/reviews/`,review,config).then(response=>{
+                
+                            dispatch({type:PRODUCT_CREATE_REVIEW_SUCCESS,payload:response.data})
+                            
+                        })
+                
+                    }
                     
-                };
-
-                axios.put(`/api/products/updateproduct/${product._id}`,product,config).then(response=>{
-
-                    dispatch({type:PRODUCT_UPDATE_SUCCESS,payload:response.data})
-
-                    dispatch({type:PROUDUCT_DETAILS_SUCCESS,payload:response.data})
-
-                })
-
-            }
-            
-            catch(error)
-            
-            {    
-
-                dispatch({
+                    catch(error){    
+                
+                        dispatch({
+                            
+                            type:PRODUCT_CREATE_REVIEW_FAIL,payload:error.response && error.response.data.detail 
+                            ? error.response.data.detail
+                            : error.message,
+                
+                        })
+                
+                    }
+                
+                    }
+                
                     
-                    type:PRODUCT_UPDATE_FAIL,payload:error.response && error.response.data.detail 
-                    ? error.response.data.detail
-                    : error.message,
-
-                })
-
-            }
-
-            }
-
-
-
-
-
-
 
 
     // export const listProductss = () => async(dispatch,getState)=> 
