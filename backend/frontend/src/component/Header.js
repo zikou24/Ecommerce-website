@@ -47,7 +47,7 @@ const logoutHandler=()=>{
           
           <SearchBox/>
 
-          <Nav className="mr-auto">
+          <Nav className="ml-auto">
 
           <LinkContainer to = '/card'>
             <Nav.Link><i className='fas fa-shopping-cart'></i>CART</Nav.Link>

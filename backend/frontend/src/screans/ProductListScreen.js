@@ -2,7 +2,7 @@ import React,{useEffect} from 'react'
 
 import {Button,Table,Row,Col} from 'react-bootstrap'
 
-import { useNavigate} from 'react-router-dom'
+import { useNavigate,useLocation} from 'react-router-dom'
 import Loader from '../component/Loader'
 import Message from '../component/Message'
 import {LinkContainer} from 'react-router-bootstrap'
@@ -10,17 +10,21 @@ import { useDispatch,useSelector } from 'react-redux'
 import { listProducts } from '../actions/productActions'
 import { deleteProduct ,createProduct} from '../actions/productActions'
 
+import PaginateAdmin from '../component/PagintateAdmin'
+
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
 function ProductListScreen() {
 
     let history = useNavigate()
 
+    let location = useLocation()
+
     const dispatch = useDispatch()
 
     const productssList = useSelector(state=>state.productList)
     
-    const { loading, error, products } = productssList
+    const { loading, error, products,pages,page } = productssList
     
     const usersLogin = useSelector(state=>state.userLogin)
 
@@ -36,6 +40,8 @@ function ProductListScreen() {
 
     const {success:successCreated ,product:createdProduct} = createProductss
 
+    let keyword = location.search
+
     useEffect(()=>{
 
         dispatch({type:PRODUCT_CREATE_RESET})
@@ -49,9 +55,9 @@ function ProductListScreen() {
             
         }
         else{
-            dispatch(listProducts())
+            dispatch(listProducts(keyword))
         }
-    },[dispatch,history,successDeleted,successCreated,createdProduct,userInfo])
+    },[dispatch,history,successDeleted,successCreated,createdProduct,userInfo,keyword])
     
 const createProductHandler=()=>{
 
@@ -158,17 +164,15 @@ if(window.confirm('Are you Sure you want to delete This product ? ')){
 
                   </tbody>
 
-              </Table></>
-       
+              </Table>
+              <PaginateAdmin page = {page} pages = {pages} isAdmin = {true} />
+
+              </>       
 )
 }
 
 </div>
-    
       )
-
-
-
 }
 
 export default ProductListScreen

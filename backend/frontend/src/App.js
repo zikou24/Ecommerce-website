@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Container } from 'react-bootstrap'
 
-import { BrowserRouter,Routes,Route} from 'react-router-dom'
+import { HashRouter,Routes,Route} from 'react-router-dom'
 
 import Footer from './component/Footer';
 import Header from './component/Header';
@@ -28,7 +28,7 @@ class App extends Component {
   render() {
     return (
    
-      <BrowserRouter>
+      <HashRouter>
          <Header/>
         <main className='py-3'>
           
@@ -67,7 +67,7 @@ class App extends Component {
         </main>
 
         <Footer/>
-      </BrowserRouter>
+      </HashRouter>
     );
   } 
 }

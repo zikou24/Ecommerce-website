@@ -7,7 +7,8 @@ import {useDispatch,useSelector} from 'react-redux'
 import { listProducts } from '../actions/productActions'
 import Loader from '../component/Loader'
 import Message from '../component/Message'
-
+import Paginate from '../component/Paginate'
+import ProductCaresoul from '../component/ProductCaresoul'
 
 function HomeScreen() {
 
@@ -19,9 +20,10 @@ function HomeScreen() {
 
     const productList = useSelector(state=>state.productList)
     
-    const {error,loading,products}  = productList
+    const {error,loading,products,page,pages}  = productList
 
     let keyword = location.search
+
     console.log(keyword)
 
      useEffect(()=>{
@@ -35,12 +37,16 @@ function HomeScreen() {
   return (
 
     <div>
-
+        {!keyword && <ProductCaresoul/> }
+      
         <h1> Latest Product</h1>
-
+  
         {loading ? <Loader/>
         : error ?  <Message variant = 'danger'>{error}</Message>
-        : <Row>
+        : 
+        <div>
+            
+        <Row>
 
         {products.map(product=>(
             
@@ -53,6 +59,9 @@ function HomeScreen() {
         ))}
         
     </Row>
+
+<Paginate page = {page} pages = {pages} keyword = {keyword}/>
+    </div>
 }
       
         </div>

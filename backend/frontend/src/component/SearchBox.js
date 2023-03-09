@@ -13,14 +13,13 @@ function SearchBox() {
     const submitHandler = (e)=>{
         e.preventDefault()
         if (keyword){
-            history(`/?keyword=${keyword}`)
+            history(`/?keyword=${keyword}&page=1`)
 
         }else{
 
             history(history(location.pathname))
         
         }
-
 
     }
 
