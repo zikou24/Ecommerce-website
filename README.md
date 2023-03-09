@@ -17,7 +17,9 @@ Ecommerce website using django and react js
 
 
 
-4 - run the command : 
+4 - run this command to  start the server: 
+
+
      python manage.py runserver
      
      
